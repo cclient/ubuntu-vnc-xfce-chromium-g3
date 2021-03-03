@@ -1,5 +1,4 @@
-![Screen Shot 2021-03-03 at 10.32.25 PM](https://rpi.cuidp.top:59173/note/uPic/Screen%20Shot%202021-03-03%20at%2010.32.25%20PM.png)
-
+<img src="https://rpi.cuidp.top:59173/note/uPic/Screen%20Shot%202021-03-03%20at%2010.32.25%20PM.png" alt="Screen Shot 2021-03-03 at 10.32.25 PM" style="zoom:50%;" />
 ### 安装软件
 
 * 百度云
