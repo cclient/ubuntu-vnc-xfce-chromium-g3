@@ -1,4 +1,5 @@
 <img src="https://rpi.cuidp.top:59173/note/uPic/Screen%20Shot%202021-03-03%20at%2010.32.25%20PM.png" alt="Screen Shot 2021-03-03 at 10.32.25 PM" style="zoom:50%;" />
+
 ### 安装软件
 
 * 百度云
@@ -35,58 +36,40 @@ https://hub.docker.com/repository/docker/cclient/ubuntu-vnc-xfce-chromium-g3
 
 ### 启动命令
 
-vnc客户端
+vnc客户端访问
 
-docker run --user headless -e VNC_PW=headless -d --name vnc -e LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri -e LIBVA_DRIVER_NAME=iHD --device /dev/dri:/dev/dri  -v /srv:/srv -p 5901:5901 cclient/ubuntu-vnc-xfce-chromium-g3:vnc
+`docker run  --user root -d --name vnc -e VNC_PW=headless -e LIBVA_DRIVER_NAME=iHD -v /root/headless_config_baidunetdisk:/home/headless/.config/baidunetdisk -v /root/headless_cache:/home/headless/.cache -v /root/headless_ThunderNetwork:/home/headless/ThunderNetwork --device /dev/dri:/dev/dri -p 5901:5901 cclient/ubuntu-vnc-xfce-chromium-g3:vnc`
 
-浏览器
+浏览器访问
 
-docker run --user headless -e VNC_PW=headless -d --name vnc -e LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri -e LIBVA_DRIVER_NAME=iHD --device /dev/dri:/dev/dri  -v /srv:/srv -p 6901:6901 cclient/ubuntu-vnc-xfce-chromium-g3:vnc-novnc
+`docker run  --user root -d --name vnc -e VNC_PW=headless -e LIBVA_DRIVER_NAME=iHD -v /root/headless_config_baidunetdisk:/home/headless/.config/baidunetdisk -v /root/headless_cache:/home/headless/.cache -v /root/headless_ThunderNetwork:/home/headless/ThunderNetwork --device /dev/dri:/dev/dri -p 6901:6901 cclient/ubuntu-vnc-xfce-chromium-g3:vnc-novnc`
 
 #### 参数说明
 
---user headless / root 以指定用户身份访问，root其实方便一些，不过有些软件例如vlc, nextcloud 无法以root 用户执行，需要以headless运行，或更改设置
+##### 通用参数
+
+--user headless / root  以指定用户身份访问，root其实方便一些，不过有些软件例如vlc, nextcloud 无法以root 用户执行，需要以headless运行，或更改设置，若直接以headless启动，则因为部分目录权限问题，不可保存登录状态，需以root进入容器，更改相关目录的权限
 
 -e VNC_PW=headless vnc 密码
 
--e LANG='zh_CN.utf8' 指定UI为中文，默认英语，建议先用中文进入熟悉环境，然后以英语启动，主要是ui里中文命令行字体/字间距太怪
+-e LANG='zh_CN.utf8' 指定UI为中文，默认英语，建议对英文环境不熟悉的先用中文进入熟悉环境，然后以英语启动，中文环境下终端的字体比较诡异
 
---device /dev/dri:/dev/dri  显卡
+##### 视频硬解显卡相关参数-实际并不生效，未解决
 
--e LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri 默认设为该值即可
+--device /dev/dri:/dev/dri  显卡，映射显卡，硬解使用，虽然查看显卡信息正常，但我个人硬解并不生效
 
-驱动文件目录 /usr/lib/x86_64-linux-gnu/dri
+-e LIBVA_DRIVER_NAME=iHD 显卡名称，需根据不同的显卡调整，我个人的U集显为hd630 LIBVA_DRIVER_NAME设置为iHD,hd610可能是i915 其他显卡需要自行测试
 
--e LIBVA_DRIVER_NAME=iHD 显卡名称，需根据不同的显卡调整
+支持`i915,i965,iHD,iris,kms_swrast,nouveau,nouveau_vieux,r200,r300,r600,radeon,radeonsi,swrast,virtio_gpu,vmwgfx,zink这些参数，可以查询相应的显卡设置值，或更改env测试
 
-```
--rw-r--r--  5 root root  15M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/i915_dri.so
--rw-r--r--  5 root root  15M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/i965_dri.so
--rw-r--r--  1 root root 7.8M Feb  6  2020 /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
--rw-r--r--  1 root root 7.1M Apr  9  2020 /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/iris_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/kms_swrast_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/nouveau_dri.so
--rw-r--r--  3 root root 9.4M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/nouveau_drv_video.so
--rw-r--r--  5 root root  15M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/nouveau_vieux_dri.so
--rw-r--r--  5 root root  15M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/r200_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/r300_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/r600_dri.so
--rw-r--r--  3 root root 9.4M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/r600_drv_video.so
--rw-r--r--  5 root root  15M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/radeon_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/radeonsi_dri.so
--rw-r--r--  3 root root 9.4M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/radeonsi_drv_video.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/swrast_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/virtio_gpu_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/vmwgfx_dri.so
--rw-r--r-- 10 root root  22M Dec 18 08:35 /usr/lib/x86_64-linux-gnu/dri/zink_dri.so
+测试方法如下，更改环境变量后执行vainfo
+
+```bash
+export LIBVA_DRIVER_NAME=iHD
+vainfo
 ```
 
-看文件列表支持以下参数
-
-`i915,i965,iHD,iris,kms_swrast,nouveau,nouveau_vieux,r200,r300,r600,radeon,radeonsi,swrast,virtio_gpu,vmwgfx,zink
-
-我个人的U集显为hd630 LIBVA_DRIVER_NAME设置为iHD,hd610可能是i915 其他显卡需要自行测试，以我个人为例，成功匹配则
+匹配成功则输出
 
 ```bash
 root@83e7992ab44a:~# vainfo
@@ -116,10 +99,9 @@ vainfo: Supported profile and entrypoints
       VAProfileVP9Profile2            :	VAEntrypointVLD
 ```
 
-匹配失败则
+匹配失败则输出
 
 ```bash
-root@83e7992ab44a:~# export LIBVA_DRIVER_NAME=i915
 root@83e7992ab44a:~# vainfo
 error: XDG_RUNTIME_DIR not set in the environment.
 libva info: VA-API version 1.7.0
@@ -130,6 +112,33 @@ vaInitialize failed with error code -1 (unknown libva error),exit
 ```
 
 不过虽然看样子驱动成功了，但个人实际播放视频并没有使用硬解，我也不知哪里的问题，还希望熟悉的提示解决
+
+##### 软件状态保持参数-需`-v`映射外部目录(主要是登录状态)
+
+| 软件       | 描述                      | 路径                                      |
+| ---------- | ------------------------- | ----------------------------------------- |
+| 迅雷       | 软件运行状态/用户登录信息 | /home/headless/ThunderNetwork             |
+| 迅雷       | 默认下载目录，可操作调整  | /home/headless/迅雷下载                   |
+| 百度云     | 软件运行状态/用户登录信息 | /home/headless/.config/baidunetdisk       |
+| 百度云     | 默认下载目录，可操作调整  | /home/headless                            |
+| 网易云音乐 | 软件运行状态/用户登录信息 | /home/headless/.cache/netease-cloud-music |
+
+```bash
+/home/headless/ThunderNetwork
+/home/headless/.config
+/home/headless/.cache
+```
+
+其实可以粗放些，直接映射以下三个目录，若以headless启动，则因为headless对部分目录无权限，导致无法保存，需以root进入容器，更改权限
+
+操作如下
+
+```bash
+docker exec --user root -it vnc bash 
+chmod headless:headless -R /home/headless
+```
+
+
 
 ---
 
